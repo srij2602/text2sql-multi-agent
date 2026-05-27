@@ -1,0 +1,221 @@
+{
+  "description": "Sample queries for Text2SQL multi-agent system testing and demonstration",
+  "version": "1.0",
+  "categories": {
+    "analytics": {
+      "description": "Aggregation and trend queries",
+      "queries": [
+        {
+          "id": "A001",
+          "query": "Show me total fraud transactions last month",
+          "expected_intent": "analytics",
+          "expected_type": "structured",
+          "expected_tables": ["transactions"],
+          "difficulty": "easy"
+        },
+        {
+          "id": "A002",
+          "query": "Which users had the highest spend this quarter?",
+          "expected_intent": "analytics",
+          "expected_type": "structured",
+          "expected_tables": ["transactions"],
+          "difficulty": "easy"
+        },
+        {
+          "id": "A003",
+          "query": "Show me daily fraud count for last week",
+          "expected_intent": "analytics",
+          "expected_type": "structured",
+          "expected_tables": ["transactions"],
+          "difficulty": "medium"
+        },
+        {
+          "id": "A004",
+          "query": "What is the average transaction amount by merchant category this year?",
+          "expected_intent": "analytics",
+          "expected_type": "structured",
+          "expected_tables": ["transactions"],
+          "difficulty": "medium"
+        },
+        {
+          "id": "A005",
+          "query": "Show me top 10 merchants by total transaction volume last quarter",
+          "expected_intent": "analytics",
+          "expected_type": "structured",
+          "expected_tables": ["transactions"],
+          "difficulty": "medium"
+        },
+        {
+          "id": "A006",
+          "query": "Which users had more than 10 transactions above $1000 this month?",
+          "expected_intent": "analytics",
+          "expected_type": "structured",
+          "expected_tables": ["transactions"],
+          "difficulty": "hard"
+        }
+      ]
+    },
+    "lookup": {
+      "description": "Specific record retrieval queries",
+      "queries": [
+        {
+          "id": "L001",
+          "query": "Show me suspicious transactions from Netflix",
+          "expected_intent": "lookup",
+          "expected_type": "structured",
+          "expected_tables": ["transactions"],
+          "difficulty": "easy"
+        },
+        {
+          "id": "L002",
+          "query": "Show me all flagged transactions above $5000",
+          "expected_intent": "lookup",
+          "expected_type": "structured",
+          "expected_tables": ["transactions"],
+          "difficulty": "easy"
+        },
+        {
+          "id": "L003",
+          "query": "Find all Amazon transactions from last week",
+          "expected_intent": "lookup",
+          "expected_type": "structured",
+          "expected_tables": ["transactions"],
+          "difficulty": "easy"
+        },
+        {
+          "id": "L004",
+          "query": "Show me transactions from user U001 last month",
+          "expected_intent": "lookup",
+          "expected_type": "structured",
+          "expected_tables": ["transactions"],
+          "difficulty": "medium"
+        }
+      ]
+    },
+    "summary": {
+      "description": "High level summary and overview queries",
+      "queries": [
+        {
+          "id": "S001",
+          "query": "Summarize fraud trends",
+          "expected_intent": "summary",
+          "expected_type": "structured",
+          "expected_tables": ["transactions"],
+          "difficulty": "easy"
+        },
+        {
+          "id": "S002",
+          "query": "Give me an overview of transaction activity this month",
+          "expected_intent": "summary",
+          "expected_type": "structured",
+          "expected_tables": ["transactions"],
+          "difficulty": "medium"
+        },
+        {
+          "id": "S003",
+          "query": "What are the key fraud insights for this quarter?",
+          "expected_intent": "summary",
+          "expected_type": "structured",
+          "expected_tables": ["transactions"],
+          "difficulty": "hard"
+        }
+      ]
+    },
+    "followup": {
+      "description": "Follow-up queries that depend on previous context",
+      "queries": [
+        {
+          "id": "F001",
+          "base_query": "Show me fraud transactions last month",
+          "followup_query": "Now filter by Amazon only",
+          "expected_intent": "lookup",
+          "expected_followup": true,
+          "difficulty": "medium"
+        },
+        {
+          "id": "F002",
+          "base_query": "Which users had highest spend this quarter?",
+          "followup_query": "Show only users from the US",
+          "expected_intent": "analytics",
+          "expected_followup": true,
+          "difficulty": "medium"
+        },
+        {
+          "id": "F003",
+          "base_query": "Show me suspicious transactions",
+          "followup_query": "Also exclude transactions below $100",
+          "expected_intent": "lookup",
+          "expected_followup": true,
+          "difficulty": "hard"
+        }
+      ]
+    },
+    "unstructured": {
+      "description": "General knowledge queries that cannot be answered via SQL",
+      "queries": [
+        {
+          "id": "U001",
+          "query": "What is fraud detection?",
+          "expected_intent": "unknown",
+          "expected_type": "unstructured",
+          "difficulty": "easy"
+        },
+        {
+          "id": "U002",
+          "query": "How does machine learning work?",
+          "expected_intent": "unknown",
+          "expected_type": "unstructured",
+          "difficulty": "easy"
+        },
+        {
+          "id": "U003",
+          "query": "What is a good fraud detection threshold?",
+          "expected_intent": "unknown",
+          "expected_type": "unstructured",
+          "difficulty": "medium"
+        }
+      ]
+    },
+    "edge_cases": {
+      "description": "Edge cases for robustness testing",
+      "queries": [
+        {
+          "id": "E001",
+          "query": "Show me everything",
+          "expected_intent": "lookup",
+          "expected_type": "structured",
+          "difficulty": "edge",
+          "note": "Vague query — should return limited results"
+        },
+        {
+          "id": "E002",
+          "query": "DELETE all fraud transactions",
+          "expected_intent": "unknown",
+          "expected_type": "structured",
+          "difficulty": "edge",
+          "note": "Dangerous keyword — should be blocked by validator"
+        },
+        {
+          "id": "E003",
+          "query": "",
+          "expected_intent": "unknown",
+          "expected_type": "unstructured",
+          "difficulty": "edge",
+          "note": "Empty query — should be handled gracefully"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "total_queries": 22,
+    "categories": 6,
+    "difficulty_distribution": {
+      "easy": 9,
+      "medium": 9,
+      "hard": 3,
+      "edge": 3
+    },
+    "created_by": "Srijita Acharyya",
+    "purpose": "Portfolio demonstration and pipeline testing"
+  }
+}
