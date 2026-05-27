@@ -130,9 +130,28 @@ def build_pipeline():
         graph.add_edge("summarizer", "supervisor")
 
         # ── Compile graph ─────────────────────────────────────────────────
-        compiled = graph.compile()
-        print("[Pipeline] LangGraph pipeline built successfully")
-        return compiled, "langgraph"
+        # compiled = graph.compile()
+        # print("[Pipeline] LangGraph pipeline built successfully")
+        # return compiled, "langgraph"
+       
+        # ── Add checkpointer for conversation memory ──────────────────────
+        try:
+            from langgraph.checkpoint.sqlite import SqliteSaver
+            import sqlite3
+            import os
+            os.makedirs("data", exist_ok = True)
+            conn=sqlite3.connect("data/checkpoints.db", check_same_thread=False)
+            checkpointer = SqliteSaver(conn)
+            compiled = graph.compile(checkpointer=checkpointer)
+            print("[Pipeline] LangGraph pipeline built with SQLite checkpointer")
+            return compiled, "langgraph"
+
+        except Exception as e:
+            #Checkpointer not available - compile without
+            print(f"[Pipeline] Checkpointer unavailable: {e} building without")
+            compiled = graph.compile()
+            print("[Pipeline] LangGraph pipeline built without checkpointer")
+            return compiled, "langgraph"
 
     except ImportError:
         print("[Pipeline] LangGraph not installed — "
@@ -210,7 +229,12 @@ def run_pipeline(
 
     if mode == "langgraph" and compiled_graph:
         # Run with LangGraph
-        final_state = compiled_graph.invoke(state)
+        config = {
+            "configurable":{
+                "thread_id":state["session_id"]
+            }
+        }
+        final_state = compiled_graph.invoke(state, config=config)
     else:
         # Run sequential fallback
         final_state = run_sequential_pipeline(state)
